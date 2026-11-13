@@ -1,3 +1,4 @@
 include README.md
+include README-PAQUET.md
 include CHANGELOG.md
 recursive-include sentiment_app/models *.joblib

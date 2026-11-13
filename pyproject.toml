@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "sentiment-app"
 version = "1.0.0"
 description = "Application de détection du sentiment des avis clients."
-readme = "README.md"
+readme = "README-PAQUET.md"
 requires-python = ">=3.11"
 authors = [{ name = "Binôme sentiment-app" }]
 dependencies = [

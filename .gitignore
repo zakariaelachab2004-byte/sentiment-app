@@ -34,6 +34,7 @@ htmlcov/
 .hypothesis/
 .mypy_cache/
 .ruff_cache/
+docs/livrable-tp4.txt
 !data/jeu_or.csv
 
 # TP5
