@@ -1,18 +1,24 @@
 """Raccord entre l'API et le modèle entraîné au TP2.
 
 L'API n'entraîne rien et ne connaît pas scikit-learn : elle appelle la fonction
-predict() de src/predict.py, qui charge models/sentiment.joblib une seule fois.
+predict() du paquet installable sentiment_app, qui charge models/sentiment.joblib
+une seule fois.
 """
-import sys
-from pathlib import Path
-from typing import TypedDict
+import importlib
+from typing import Any, TypedDict, cast
 
 from api.schemas import Label
 
-RACINE = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(RACINE / "src"))
-from predict import charger_modele  # noqa: E402  (fonctions du TP2)
-from predict import predict as _predict  # noqa: E402
+try:
+    _predict_module = importlib.import_module("predict")
+except ModuleNotFoundError:
+    from sentiment_app.predict import charger_modele as _charger_modele
+    from sentiment_app.predict import predict as _predict
+else:
+    _charger_modele = cast(Any, _predict_module).charger_modele
+    _predict = cast(Any, _predict_module).predict
+
+charger_modele = _charger_modele
 
 # Choisi sur la courbe du seuil (python src/courbe_seuil.py) : voir docs/semaine4.md, partie 3
 SEUIL_ABSTENTION = 0.60
