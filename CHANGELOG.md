@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0] - 2026-11-13
+
+### Ajouté
+- livrable TP4 conforme : paquet installable hors du dépôt
+- inclusion du modèle `sentiment.joblib` dans la roue du package
+- script de vérification `scripts/verifier_livrable.py`
+- tests du paquet installé `tests/test_paquet.py`
+- rapport de livraison `docs/livrable-tp4.txt`
+- commande `sentiment` installée et vérifiable dans un environnement neuf
+
+### Modifié
+- version du paquet portée à `1.0.0`
+- `pyproject.toml` configure les ressources embarquées dans le wheel
+- `sentiment_app.predict` charge le modèle depuis le paquet installé ou le dépôt
+- interface CLI supporte les formes `sentiment "texte"` et `sentiment predict ...`
+
 ## [0.6.0] - 2026-11-13
 
 ### Ajouté

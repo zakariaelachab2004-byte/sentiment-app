@@ -1,0 +1,14 @@
+Livrable TP 4 - sentiment-app
+
+Bilan : CONFORME
+
+- Nom du paquet : sentiment-app
+- Version : 1.0.0
+- Modèle embarqué dans la roue : OK
+- Commande CLI installée : sentiment
+- Vérification dans un environnement neuf : OK
+- Tests du paquet installés : 3 passed
+- Intégration de la ressource modèle dans le package : OK
+- Changelog : CHANGELOG.md mentionne [1.0.0]
+
+Le paquet installable est prêt à être publié comme release GitHub.

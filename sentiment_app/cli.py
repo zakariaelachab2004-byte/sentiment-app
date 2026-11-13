@@ -17,11 +17,14 @@ def _version() -> int:
     return 0
 
 
-def _predict_command(texte: list[str]) -> int:
+def _predict_command(texte: list[str], *, as_json: bool = False) -> int:
     text = " ".join(texte)
     resultat = predict(text)
-    payload = {"label": resultat["label"].upper(), "score": round(float(resultat["score"]), 4), "text": text}
-    print(json.dumps(payload, ensure_ascii=False))
+    payload = {"label": str(resultat["label"]).upper(), "score": round(float(resultat["score"]), 4), "text": text}
+    if as_json:
+        print(json.dumps(payload, ensure_ascii=False))
+        return 0
+    print(f"{payload['label']} (confiance {payload['score']:.0%})")
     return 0
 
 
@@ -40,24 +43,41 @@ def _ui() -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    raw_args = list(sys.argv[1:] if argv is None else argv)
+
+    if raw_args and raw_args[0] in {"predict", "serve", "ui"}:
+        parser = argparse.ArgumentParser(prog="sentiment")
+        parser.add_argument("--version", action="store_true", help="Affiche la version du paquet")
+        subs = parser.add_subparsers(dest="command")
+
+        predict_parser = subs.add_parser("predict", help="Classifier un texte")
+        predict_parser.add_argument("text", nargs="+")
+        predict_parser.add_argument("--json", action="store_true", help="Sortie JSON")
+
+        subs.add_parser("serve", help="Lance l'API FastAPI")
+        subs.add_parser("ui", help="Lance l'interface Streamlit")
+
+        args = parser.parse_args(raw_args)
+        if args.version:
+            return _version()
+        if args.command == "predict":
+            return _predict_command(args.text, as_json=args.json)
+        if args.command == "serve":
+            return _serve()
+        if args.command == "ui":
+            return _ui()
+        parser.print_help()
+        return 0
+
     parser = argparse.ArgumentParser(prog="sentiment")
     parser.add_argument("--version", action="store_true", help="Affiche la version du paquet")
-    subs = parser.add_subparsers(dest="command")
+    parser.add_argument("--json", action="store_true", help="Sortie JSON")
+    parser.add_argument("texte", nargs="*", help="Avis à classifier")
+    args = parser.parse_args(raw_args)
 
-    predict_parser = subs.add_parser("predict", help="Classifier un texte")
-    predict_parser.add_argument("text", nargs="+")
-
-    subs.add_parser("serve", help="Lance l'API FastAPI")
-    subs.add_parser("ui", help="Lance l'interface Streamlit")
-
-    args = parser.parse_args(argv)
     if args.version:
         return _version()
-    if args.command == "predict":
-        return _predict_command(args.text)
-    if args.command == "serve":
-        return _serve()
-    if args.command == "ui":
-        return _ui()
-    parser.print_help()
-    return 0
+    if not args.texte:
+        parser.print_help()
+        return 0
+    return _predict_command(args.texte, as_json=args.json)

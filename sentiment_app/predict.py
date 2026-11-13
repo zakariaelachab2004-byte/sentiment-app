@@ -14,13 +14,18 @@ if "predict" in sys.modules and sys.modules["predict"] is not sys.modules[__name
     sys.modules[__name__] = sys.modules["predict"]
 
 RACINE = Path(__file__).resolve().parents[1]
+PACKAGE_MODEL = Path(__file__).resolve().parent / "models" / "sentiment.joblib"
+REPO_MODEL = RACINE / "models" / "sentiment.joblib"
 
 
 def chemin_modele() -> Path:
     """Le chemin du modèle est configurable par la variable d'environnement SENTIMENT_MODELE."""
     if modele := os.environ.get("SENTIMENT_MODELE"):
         return Path(modele)
-    return RACINE / "models" / "sentiment.joblib"
+    for candidate in (PACKAGE_MODEL, REPO_MODEL):
+        if candidate.exists():
+            return candidate
+    return PACKAGE_MODEL
 
 
 MODELE = chemin_modele()
